@@ -401,18 +401,18 @@ void TheThingsNetwork::autoBaud()
 
 void TheThingsNetwork::reset(bool adr)
 {
-  if (!baudDetermined)
-  {
+//  if (!baudDetermined)
+//  {
     autoBaud();
-  }
+//  }
 
-  size_t length = readResponse(SYS_TABLE, SYS_RESET, buffer, sizeof(buffer));
-
-  // buffer contains "RN2xx3[xx] x.x.x ...", splitting model from version
-  char *model = strtok(buffer, " ");
-  debugPrintIndex(SHOW_MODEL, model);
-  char *version = strtok(NULL, " ");
-  debugPrintIndex(SHOW_VERSION, version);
+//  size_t length = readResponse(SYS_TABLE, SYS_RESET, buffer, sizeof(buffer));
+//
+//  // buffer contains "RN2xx3[xx] x.x.x ...", splitting model from version
+//  char *model = strtok(buffer, " ");
+//  debugPrintIndex(SHOW_MODEL, model);
+//  char *version = strtok(NULL, " ");
+//  debugPrintIndex(SHOW_VERSION, version);
 
   readResponse(SYS_TABLE, SYS_TABLE, SYS_GET_HWEUI, buffer, sizeof(buffer));
   sendMacSet(MAC_DEVEUI, buffer);
