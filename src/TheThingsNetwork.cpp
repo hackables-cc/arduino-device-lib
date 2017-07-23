@@ -401,12 +401,11 @@ void TheThingsNetwork::autoBaud()
 
 void TheThingsNetwork::reset(bool adr)
 {
-  if (!baudDetermined)
-  {
-    autoBaud();
-  }
-
+  autoBaud();
   size_t length = readResponse(SYS_TABLE, SYS_RESET, buffer, sizeof(buffer));
+
+  autoBaud();
+  length = readResponse(SYS_TABLE, SYS_TABLE, SYS_GET_VER, buffer, sizeof(buffer));  
 
   // buffer contains "RN2xx3[xx] x.x.x ...", splitting model from version
   char *model = strtok(buffer, " ");
@@ -945,7 +944,7 @@ bool TheThingsNetwork::sendPayload(uint8_t mode, uint8_t port, uint8_t *payload,
 
 void TheThingsNetwork::sleep(uint32_t mseconds)
 {
-  if (mseconds < 100 || mseconds >= 4294967296)
+  if (mseconds < 100)
   {
     return;
   }
@@ -954,8 +953,13 @@ void TheThingsNetwork::sleep(uint32_t mseconds)
   sendCommand(SYS_TABLE, SYS_PREFIX, true);
   sendCommand(SYS_TABLE, SYS_SLEEP, true);
 
-  sprintf(buffer, "%ld", mseconds);
+  sprintf(buffer, "%lu", mseconds);
   modemStream->write(buffer);
   modemStream->write(SEND_MSG);
   debugPrintLn(buffer);
+}
+
+void TheThingsNetwork::wake()
+{ 
+  autoBaud();
 }
